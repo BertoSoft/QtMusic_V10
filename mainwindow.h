@@ -29,6 +29,14 @@ private slots:
 
     void on_btnPlay_clicked();
 
+    void on_btnPause_clicked();
+
+    void on_barraProgreso_sliderReleased();
+
+    void on_barraProgreso_sliderPressed();
+
+    void on_barraVolumen_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 

@@ -24,6 +24,13 @@ QtMusic::QtMusic(QObject *parent): QObject(parent){
     // el progreso de la cancion
     connect(m_player, &QMediaPlayer::positionChanged, this, [this](qint64 progresoMs){
         m_estado.progreso = static_cast<int>(progresoMs / 1000);
+
+        // si llegamos al final de la cancion
+        if(m_estado.progreso == m_estado.duracion){
+            m_estado.estadoPlayer = EstadoPlayer::Pause;
+        }
+
+        // Avisamos de cambio de estado
         emit estadoActualizado(m_estado);
     });
 
@@ -96,6 +103,29 @@ void QtMusic::setNuevaCancion(int id){
 
 }
 
+void QtMusic::setPosicionBarraProgreso(int valor){
+    qint64 valor64 = static_cast<qint64>(valor * 1000);
+
+    if(valor != m_estado.progreso){
+        m_player->setPosition(valor64);
+        m_estado.progreso = valor;
+
+        m_player->play();
+        m_estado.estadoPlayer =  EstadoPlayer::Play;
+
+        emit estadoActualizado(m_estado);
+    }
+}
+
+void QtMusic::setVolumen(int valor){
+    float fValor = static_cast<float>(valor)/ 100.0;
+
+    m_audioOutput->setVolume(fValor);
+    m_estado.volumen = valor;
+
+    emit estadoActualizado(m_estado);
+}
+
 void QtMusic::setProximaCancio(int id){
 
     for(int i=0; i<m_estado.listaCanciones.count(); i++){
@@ -131,6 +161,15 @@ void QtMusic::playClick(){
     m_estado.estadoPlayer = EstadoPlayer::Play;
 
     // emitimos cambio estado
+    emit estadoActualizado(m_estado);
+}
+
+void QtMusic::pauseClick(){
+    if(m_estado.estadoPlayer != EstadoPlayer::Play) return;
+
+    m_player->pause();
+    m_estado.estadoPlayer = EstadoPlayer::Pause;
+
     emit estadoActualizado(m_estado);
 }
 

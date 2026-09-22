@@ -51,7 +51,8 @@ void MainWindow::dibujaUi(const QtMusic::EstadoUi &estado){
     // Cancion Actual
     ui->lblCancionActual->setText(estado.cancionActual);
 
-    // Barrra de progreso
+    // Barrra de progreso solo actualiza si no se pulsa
+    ui->barraProgreso->setMaximum(estado.duracion);
     ui->barraProgreso->setValue(estado.progreso);
 
     // Tiempos
@@ -71,5 +72,22 @@ void MainWindow::on_lstCanciones_itemClicked(QListWidgetItem *item){
 
 void MainWindow::on_btnPlay_clicked(){
     m_qtMusic->playClick();
+}
+
+void MainWindow::on_btnPause_clicked(){
+    m_qtMusic->pauseClick();
+}
+
+void MainWindow::on_barraProgreso_sliderReleased(){
+    int newPosicion = ui->barraProgreso->value();
+    m_qtMusic->setPosicionBarraProgreso(newPosicion);
+}
+
+void MainWindow::on_barraProgreso_sliderPressed(){
+    m_qtMusic->pauseClick();
+}
+
+void MainWindow::on_barraVolumen_valueChanged(int value){
+    m_qtMusic->setVolumen(value);
 }
 

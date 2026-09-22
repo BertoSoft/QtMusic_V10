@@ -45,6 +45,9 @@ public:
     void        setNuevaCancion(int id);
     void        setProximaCancio(int id);
     void        playClick();
+    void        pauseClick();
+    void        setPosicionBarraProgreso(int valor);
+    void        setVolumen(int valor);
 
 signals:
 
