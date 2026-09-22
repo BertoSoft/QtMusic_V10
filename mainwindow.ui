@@ -101,8 +101,20 @@ QProgressBar::chunk {
            </item>
            <item>
             <widget class="QLabel" name="lblProximaCancion">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
               <string>Ninguna canción seleccionada...</string>
+             </property>
+             <property name="scaledContents">
+              <bool>true</bool>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -114,7 +126,7 @@ QProgressBar::chunk {
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="2,1">
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="5,1">
       <item>
        <widget class="QFrame" name="frame_3">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -253,7 +265,25 @@ QProgressBar::chunk {
             </widget>
            </item>
            <item>
-            <widget class="QLCDNumber" name="lcdTiempo"/>
+            <widget class="QLabel" name="lblTiempo">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>-1</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>00:00 / 00:00</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -320,7 +350,7 @@ QProgressBar::chunk {
             </widget>
            </item>
            <item>
-            <widget class="QSlider" name="sliderVolumen">
+            <widget class="QSlider" name="barraVolumen">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
              </property>

@@ -1,7 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "qtmusic.h"
+
 #include <QMainWindow>
+#include <QListWidgetItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,7 +20,24 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
+
+private slots:
+    // Slot que recibira el estado de QtMusic y llamara a dibujaUi()
+    void dibujaUi(const QtMusic::EstadoUi &estado);
+
+    void on_lstCanciones_itemClicked(QListWidgetItem *item);
+
+    void on_btnPlay_clicked();
+
 private:
     Ui::MainWindow *ui;
+
+    // Funciones privadas
+    void initUi();
+    void initConnect();
+
+
+    // Variable que guarda el puntero a QtMusic
+    QtMusic *m_qtMusic;
 };
 #endif // MAINWINDOW_H
