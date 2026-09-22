@@ -11,69 +11,25 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Reproductor de Música</string>
+   <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">
-#centralwidget {
+    <string notr="true">#centralwidget {
     background-color: #1A1C29;
-}
-QFrame {
-    border: none;
-}
-QListWidget {
-    background-color: #24273A;
-    border: 1px solid #3B3F5C;
-    border-radius: 8px;
-    color: #E0E0E6;
-    padding: 5px;
-}
-QListWidget::item:selected {
-    background-color: #6366F1;
-    color: white;
-    border-radius: 4px;
-}
-QPushButton {
-    background-color: #24273A;
-    color: #E0E0E6;
-    border: 1px solid #3B3F5C;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    background-color: #31354F;
-    border-color: #6366F1;
-}
-QPushButton:pressed {
-    background-color: #1A1C29;
-}
-QLabel {
-    color: #A0A5C1;
-    font-size: 12px;
-}
-#lblCancionActual {
-    color: #FFFFFF;
-    font-size: 14px;
-    font-weight: bold;
-}
-QProgressBar {
-    background-color: #24273A;
-    border-radius: 4px;
-    text-align: center;
-}
-QProgressBar::chunk {
-    background-color: qlineargradient(x1:0, y1:1, x2:0, y2:0, stop:0 #6366F1, stop:1 #A855F7);
-    border-radius: 4px;
-}
-    </string>
+}</string>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,2">
+   <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="2,3">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_4" stretch="10,1">
       <item>
        <widget class="QFrame" name="frame">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QListWidget" name="lstCanciones"/>
@@ -83,6 +39,12 @@ QProgressBar::chunk {
       </item>
       <item>
        <widget class="QFrame" name="frame_2">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,10">
@@ -102,7 +64,7 @@ QProgressBar::chunk {
            <item>
             <widget class="QLabel" name="lblProximaCancion">
              <property name="text">
-              <string>Ninguna canción seleccionada...</string>
+              <string>Ninguna cancion seleccionada...</string>
              </property>
             </widget>
            </item>
@@ -117,9 +79,15 @@ QProgressBar::chunk {
      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="2,1">
       <item>
        <widget class="QFrame" name="frame_3">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QProgressBar" name="barEcualizador_1">
+          <widget class="QProgressBar" name="pb1">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -135,7 +103,7 @@ QProgressBar::chunk {
           </widget>
          </item>
          <item>
-          <widget class="QProgressBar" name="barEcualizador_2">
+          <widget class="QProgressBar" name="pb2">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -143,7 +111,7 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>40</number>
+            <number>24</number>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -151,7 +119,7 @@ QProgressBar::chunk {
           </widget>
          </item>
          <item>
-          <widget class="QProgressBar" name="barEcualizador_3">
+          <widget class="QProgressBar" name="pb3">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -159,7 +127,7 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>65</number>
+            <number>24</number>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -167,7 +135,7 @@ QProgressBar::chunk {
           </widget>
          </item>
          <item>
-          <widget class="QProgressBar" name="barEcualizador_4">
+          <widget class="QProgressBar" name="pb4">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -175,7 +143,7 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>85</number>
+            <number>24</number>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -183,7 +151,7 @@ QProgressBar::chunk {
           </widget>
          </item>
          <item>
-          <widget class="QProgressBar" name="barEcualizador_5">
+          <widget class="QProgressBar" name="pb5">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -191,7 +159,7 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>60</number>
+            <number>24</number>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -199,7 +167,7 @@ QProgressBar::chunk {
           </widget>
          </item>
          <item>
-          <widget class="QProgressBar" name="barEcualizador_6">
+          <widget class="QProgressBar" name="pb6">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -207,7 +175,7 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>35</number>
+            <number>24</number>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -215,7 +183,7 @@ QProgressBar::chunk {
           </widget>
          </item>
          <item>
-          <widget class="QProgressBar" name="barEcualizador_7">
+          <widget class="QProgressBar" name="pb7">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -223,7 +191,7 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>20</number>
+            <number>24</number>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -235,16 +203,22 @@ QProgressBar::chunk {
       </item>
       <item>
        <widget class="QFrame" name="frame_4">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QLabel" name="lblCancionActual">
            <property name="text">
-            <string>Canción actual</string>
+            <string>Cancion  actual</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="5,1">
+          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="5,2">
            <item>
             <widget class="QSlider" name="barraProgreso">
              <property name="orientation">
@@ -268,25 +242,13 @@ QProgressBar::chunk {
            </item>
            <item>
             <widget class="QPushButton" name="btnPlay">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
              <property name="text">
-              <string>▶  Play  </string>
+              <string>▶ Play</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="btnPause">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
              <property name="text">
               <string>⏸ Pause</string>
              </property>
@@ -300,27 +262,14 @@ QProgressBar::chunk {
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="lblVolumenIcono">
+            <widget class="QLabel" name="label_3">
              <property name="text">
               <string>🔊</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSlider" name="sliderVolumen">
+            <widget class="QSlider" name="horizontalSlider_2">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
              </property>
