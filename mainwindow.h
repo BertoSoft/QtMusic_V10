@@ -37,6 +37,8 @@ private slots:
 
     void on_barraVolumen_valueChanged(int value);
 
+    void on_btnProximaCancion_clicked();
+
 private:
     Ui::MainWindow *ui;
 

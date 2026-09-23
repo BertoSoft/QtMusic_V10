@@ -91,3 +91,13 @@ void MainWindow::on_barraVolumen_valueChanged(int value){
     m_qtMusic->setVolumen(value);
 }
 
+void MainWindow::on_btnProximaCancion_clicked(){
+    QList<QListWidgetItem*> listaItem = ui->lstCanciones->selectedItems();
+
+    if(listaItem.count()>0){
+        int id =listaItem[0]->data(Qt::UserRole + 1).toInt();
+        m_qtMusic->setNuevaCancion(id);
+    }
+
+}
+
