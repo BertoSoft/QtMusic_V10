@@ -84,6 +84,11 @@ void MainWindow::dibujaUi(const QtMusic::EstadoUi &estado){
 
     // 7.- barra de volumen
     ui->barraVolumen->setValue(estado.volumen);
+
+    // 8.- Barras equalizador
+    //ui->barEcualizador_1->setValue(estado.barrasEqualizador[1]);
+
+
 }
 
 void MainWindow::on_lstCanciones_itemClicked(QListWidgetItem *item){

@@ -12,6 +12,7 @@ SOURCES += \
     qtmusic.cpp
 
 HEADERS += \
+    dj_fft.h \
     mainwindow.h \
     qtmusic.h
 

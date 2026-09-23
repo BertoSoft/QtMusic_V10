@@ -1,38 +1,50 @@
 
 #include "qtmusic.h"
+#include "dj_fft.h"
 
 #include <QObject>
 #include <QStandardPaths>
 #include <QDir>
+#include <QAudioBuffer>
+#include <QAudioFormat>
+#include <QDebug>
 
 QtMusic::QtMusic(QObject *parent): QObject(parent){
 
-    // Iniciamos m_player
+    // 1.-Iniciamos m_player
     m_audioOutput   = new QAudioOutput(this);
     m_player        = new QMediaPlayer(this);
 
     m_player->setAudioOutput(m_audioOutput);
     m_audioOutput->setVolume(m_estado.volumen / 100.0);
 
-    // iniciaamos los connect
+    // 2.- iniciaamos los connect
     // la duracion de la cancion
     connect(m_player, &QMediaPlayer::durationChanged, this, [this](qint64 duracionMs){
         m_estado.duracion = static_cast<int>(duracionMs / 1000);
         emit estadoActualizado(m_estado);
     });
 
-    // el progreso de la cancion
+    // 3.- el progreso de la cancion
     connect(m_player, &QMediaPlayer::positionChanged, this, [this](qint64 progresoMs){
         m_estado.progreso = static_cast<int>(progresoMs / 1000);
-
-        // si llegamos al final pasamos a la siguiente cancion, si la hay
-        if(m_estado.progreso == m_estado.duracion){
-            adelanteClick();
-        }
 
         // Avisamos de cambio de estado
         emit estadoActualizado(m_estado);
     });
+
+    // 3,5 .- Si termina la cancion empieza la siguiente
+    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, [this](QMediaPlayer::MediaStatus estado){
+        if(estado == m_player->EndOfMedia){
+            adelanteClick();
+        }
+    });
+
+    //4.- Recogemos las muestras pcm que van al altavoz
+    m_bufferSalida = new QAudioBufferOutput(this);
+    m_player->setAudioBufferOutput(m_bufferSalida);
+
+    connect(m_bufferSalida, &QAudioBufferOutput::audioBufferReceived, this, &QtMusic::procesarMuestrasAudio);
 
 
 }
@@ -263,4 +275,124 @@ QtMusic::Cancion QtMusic::getCancionFromNombre(QString nombre){
         }
     }
     return Cancion{0, "", ""};
+}
+
+void QtMusic::procesarMuestrasAudio(const QAudioBuffer &buffer){
+    if(!buffer.isValid() || buffer.sampleCount() == 0) return;
+
+    QAudioFormat formato    = buffer.format();
+    int canales             = formato.channelCount();
+    int frecuencia          = formato.sampleRate();
+
+    const short *muestras   = buffer.constData<short>();
+    int totalMuestras       = buffer.sampleCount();
+
+    // Creamos un vector dinamico de c++ que guardara los valores normalizados en float
+    std::vector<float> datosRawNormalizados(totalMuestras);
+
+    const float *datosRawFloat = buffer.constData<float>();
+
+    if(datosRawFloat != nullptr){
+        for(int i=0; i<totalMuestras; i++){
+            datosRawNormalizados[i] = datosRawFloat[i];
+        }
+    }
+    else{
+        if(formato.sampleFormat() == QAudioFormat::Int16){
+            const int16_t *datosRaw = buffer.constData<int16_t>();
+            for(int i=0; i<totalMuestras; i++){
+                datosRawNormalizados[i] = datosRaw[i] / 32768.0f;
+            }
+        }
+        else if(formato.sampleFormat() == QAudioFormat::UInt8){
+            const uint8_t *datosRaw = buffer.constData<uint8_t>();
+            for(int i = 0; i < totalMuestras; i++){
+                datosRawNormalizados[i] = (static_cast<int>(datosRaw[i]) - 128) / 128.0f; // Centramos el cero primero
+            }
+        }
+        else{
+            return;
+        }
+    }
+
+
+
+    // =========================================================================
+    // PASO NUEVO: CONVERSIÓN A MONO Y ACUMULADOR PARA LA FFT
+    // =========================================================================
+
+    // Si es estereo guardamos la media de los dos canales en un dato
+    if(canales == 2){
+        for(int i=0; i< totalMuestras; i += 2){
+            float datoFloat = (datosRawNormalizados[i] + datosRawNormalizados[i + 1]) / 2.0f;
+            m_datosRawMono.push_back(datoFloat);
+        }
+    }
+    else{
+        for(int i=0; i<totalMuestras; i++){
+            m_datosRawMono.push_back(datosRawNormalizados[i]);
+        }
+    }
+
+    // Definimos el tamaño del buffer que se analizara
+    const size_t TAMANO_FFT = 1024;
+
+    // Esperamos a que tenga por lo menos 1024 datos
+    while (m_datosRawMono.size() >= TAMANO_FFT){
+
+        // Extraemos exactamente 1024 datos de datosRawMono
+        std::vector<float> datosFFT(m_datosRawMono.begin(), m_datosRawMono.begin() + 1024);
+
+        // =====================================================================
+        // ¡LA MAGIA DE FOURIER!
+        // =====================================================================
+        // 'espectro' contendrá exactamente 512 floats, cada uno representando
+        // la energía de una frecuencia específica de la canción en este instante.
+        std::vector<float> espectro = dj::calcular_fft(datosFFT);
+
+        //
+        //
+        // Pasasmos los datos a datosEqualizadorFromDatosTTF(), parea agruparlos
+        //
+        datosEqualizadorFromDatosTTF(espectro);
+
+        // NUEVO: Enviamos el paquete completo de datos con las 16 barras al MainWindow
+        emit estadoActualizado(m_estado);
+
+        // sacamos los 1024 datos de m_datosRawMono para seguir acumulando
+        m_datosRawMono.erase(m_datosRawMono.begin(), m_datosRawMono.begin() + 1024);
+    }
+}
+
+void QtMusic::datosEqualizadorFromDatosTTF(std::vector<float> espectro){
+    m_estado.barrasEqualizador.clear();
+
+    // 512 / 12 = 32
+    int numeroBarras = 16;
+    int datosPorBarra = (512 / numeroBarras);
+
+    // Recorrremos las barras del equalizador
+    for(int i=0; i<numeroBarras; i++){
+        float sumaValor = 0.0f;
+
+        // Recorremos los datos por barra de equalizador 512 / 16 == 32
+        for(int j=0; j<datosPorBarra;i++){
+            int indice = (i * datosPorBarra) + j;
+            sumaValor += espectro[indice];
+        }
+
+        float mediaValor = sumaValor / datosPorBarra;
+
+        // 3. Multiplicador visual (Ganancia):
+        // Los datos de la FFT suelen ser decimales muy pequeños.
+        // Multiplicamos para estirar el valor al rango de un QProgressBar (0 a 100)
+        float nivelVisual = mediaValor * 250.0f;
+
+        // Filtro de seguridad para mantener los límites del porcentaje
+        if (nivelVisual > 100.0f) nivelVisual = 100.0f;
+        if (nivelVisual < 0.0f)   nivelVisual = 0.0f;
+
+        // 4. Metemos el resultado directamente en el estado de la UI
+        m_estado.barrasEqualizador.append(nivelVisual);
+    }
 }

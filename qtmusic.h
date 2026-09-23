@@ -6,6 +6,7 @@
 #include <QString>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QAudioBufferOutput>
 
 
 class QtMusic:public QObject{
@@ -37,6 +38,7 @@ public:
         int             volumen             = 50;
         int             progreso            = 0;
         int             duracion            = 0;
+        QList<float>    barrasEqualizador;
     };
 
     // Funcion que usa Ui
@@ -60,8 +62,10 @@ signals:
 private:
 
     // Variable par Player y SalidaSonido
-    QMediaPlayer    *m_player       = nullptr;
-    QAudioOutput    *m_audioOutput  = nullptr;
+    QMediaPlayer        *m_player           = nullptr;
+    QAudioOutput        *m_audioOutput      = nullptr;
+    QAudioBufferOutput  *m_bufferSalida     = nullptr;
+    std::vector<float>   m_datosRawMono;
 
     // La variable real que mantien el estado en memoria
     EstadoUi m_estado;
@@ -69,6 +73,8 @@ private:
     // Funciones Privadas
     QString nombreCancionToRuta(QString nombre);
     Cancion getCancionFromId(int id);
+    void    procesarMuestrasAudio(const QAudioBuffer &buffer);
+    void    datosEqualizadorFromDatosTTF(std::vector<float> espectro);
 
 };
 
