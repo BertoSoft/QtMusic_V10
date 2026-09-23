@@ -39,15 +39,18 @@ public:
         int             duracion            = 0;
     };
 
-    // Funcion que usa Ui para recoger estado
+    // Funcion que usa Ui
     EstadoUi    getEstado() const;
     void        initQtMusic();
     void        setNuevaCancion(int id);
     void        setProximaCancio(int id);
     void        playClick();
     void        pauseClick();
+    void        adelanteClick();
+    void        atrasClick();
     void        setPosicionBarraProgreso(int valor);
     void        setVolumen(int valor);
+    Cancion     getCancionFromNombre(QString nombre);
 
 signals:
 
@@ -65,6 +68,7 @@ private:
 
     // Funciones Privadas
     QString nombreCancionToRuta(QString nombre);
+    Cancion getCancionFromId(int id);
 
 };
 

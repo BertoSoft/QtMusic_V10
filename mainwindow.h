@@ -39,6 +39,12 @@ private slots:
 
     void on_btnProximaCancion_clicked();
 
+    void on_btnAnterior_clicked();
+
+    void on_btnSiguiente_clicked();
+
+    void on_lstCanciones_itemDoubleClicked(QListWidgetItem *item);
+
 private:
     Ui::MainWindow *ui;
 

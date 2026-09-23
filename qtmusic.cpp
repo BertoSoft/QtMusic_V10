@@ -25,9 +25,9 @@ QtMusic::QtMusic(QObject *parent): QObject(parent){
     connect(m_player, &QMediaPlayer::positionChanged, this, [this](qint64 progresoMs){
         m_estado.progreso = static_cast<int>(progresoMs / 1000);
 
-        // si llegamos al final de la cancion
+        // si llegamos al final pasamos a la siguiente cancion, si la hay
         if(m_estado.progreso == m_estado.duracion){
-            m_estado.estadoPlayer = EstadoPlayer::Pause;
+            adelanteClick();
         }
 
         // Avisamos de cambio de estado
@@ -100,13 +100,25 @@ void QtMusic::initQtMusic(){
 }
 
 void QtMusic::setNuevaCancion(int id){
+    Cancion cancion = getCancionFromId(id);
+
+    if(!cancion.nombre.isEmpty()){
+
+        m_player->setSource(QUrl::fromLocalFile(cancion.ruta));
+        m_player->play();
+
+        m_estado.cancionActual = cancion.nombre;
+        m_estado.estadoPlayer = EstadoPlayer::Play;
+
+        emit estadoActualizado(m_estado);
+    }
 
 }
 
 void QtMusic::setPosicionBarraProgreso(int valor){
     qint64 valor64 = static_cast<qint64>(valor * 1000);
 
-    if(valor != m_estado.progreso){
+    if(valor != m_estado.progreso){    
         m_player->setPosition(valor64);
         m_estado.progreso = valor;
 
@@ -149,11 +161,12 @@ void QtMusic::setProximaCancio(int id){
 }
 
 void QtMusic::playClick(){
+
     // Si la lista esta vacia no reproducimos nada
     if(m_estado.listaCanciones.count() == 0) return;
 
     if(m_player->source().isEmpty()){
-        m_player->setSource(QUrl::fromLocalFile(nombreCancionToRuta(m_estado.cancionActual)));
+        m_player->setSource(QUrl::fromLocalFile(getCancionFromNombre(m_estado.cancionActual).ruta));
     }
 
     // Finalizamos, damos play y cambiamos estado
@@ -173,6 +186,54 @@ void QtMusic::pauseClick(){
     emit estadoActualizado(m_estado);
 }
 
+void QtMusic::atrasClick(){
+    if(m_estado.listaCanciones.count() < 2) return;
+
+    Cancion cancionActual   = getCancionFromNombre(m_estado.cancionActual);
+    int     id              = cancionActual.id;
+    if((id -1) < 0){
+        id = m_estado.listaCanciones.count() - 1;
+    }
+    else{
+        id --;
+    }
+
+    Cancion proximaCancion = getCancionFromId(id);
+
+    m_player->setSource(QUrl::fromLocalFile(proximaCancion.ruta));
+    m_player->play();
+
+    m_estado.cancionActual      = proximaCancion.nombre;
+    m_estado.proximaCancion     = m_estado.cancionActual;
+    m_estado.estadoPlayer       = EstadoPlayer::Play;
+
+    emit estadoActualizado(m_estado);
+}
+
+void QtMusic::adelanteClick(){
+    if(m_estado.listaCanciones.count() < 2) return;
+
+    Cancion cancionActual   = getCancionFromNombre(m_estado.cancionActual);
+    int     id              = cancionActual.id;
+    if((id + 1) == m_estado.listaCanciones.count()){
+        id = 0;
+    }
+    else{
+        id ++;
+    }
+
+    Cancion proximaCancion = getCancionFromId(id);
+
+    m_player->setSource(QUrl::fromLocalFile(proximaCancion.ruta));
+    m_player->play();
+
+    m_estado.cancionActual      = proximaCancion.nombre;
+    m_estado.proximaCancion     = m_estado.cancionActual;
+    m_estado.estadoPlayer       = EstadoPlayer::Play;
+
+    emit estadoActualizado(m_estado);
+}
+
 // Funciones Privadas
 QString QtMusic::nombreCancionToRuta(QString nombre){
     const QList<Cancion> &listaCte = m_estado.listaCanciones;
@@ -182,4 +243,24 @@ QString QtMusic::nombreCancionToRuta(QString nombre){
         }
     }
     return "";
+}
+
+QtMusic::Cancion QtMusic::getCancionFromId(int id){
+    const QList<Cancion> &listaCte = m_estado.listaCanciones;
+    for(const Cancion &cancion: listaCte){
+        if(cancion.id == id){
+            return cancion;
+        }
+    }
+    return Cancion{0, "", ""};
+}
+
+QtMusic::Cancion QtMusic::getCancionFromNombre(QString nombre){
+    const QList<Cancion> &listaCte = m_estado.listaCanciones;
+    for(const Cancion &cancion: listaCte){
+        if(cancion.nombre == nombre){
+            return cancion;
+        }
+    }
+    return Cancion{0, "", ""};
 }

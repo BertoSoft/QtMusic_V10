@@ -34,7 +34,7 @@ void MainWindow::initConnect(){
 
 void MainWindow::dibujaUi(const QtMusic::EstadoUi &estado){
 
-    // Lista de canciones
+    // 1.- Lista de canciones
     if(ui->lstCanciones->count() != estado.listaCanciones.count()){
         ui->lstCanciones->clear();
         for(int i=0; i <estado.listaCanciones.count(); i++){
@@ -45,29 +45,55 @@ void MainWindow::dibujaUi(const QtMusic::EstadoUi &estado){
         }
     }
 
-    // Proxima Cancion
+    // 2.- Proxima Cancion
     ui->lblProximaCancion->setText(estado.proximaCancion);
 
-    // Cancion Actual
+    // 3.- Cancion Actual
     ui->lblCancionActual->setText(estado.cancionActual);
 
-    // Barrra de progreso solo actualiza si no se pulsa
+    // 4.- Señalaizamos la cancionPlay selecionada
+    int idPlay = m_qtMusic->getCancionFromNombre(estado.cancionActual).id;
+    for(int i = 0; i<ui->lstCanciones->count(); i++){
+        QListWidgetItem *item = ui->lstCanciones->item(i);
+        int idLista = item->data(Qt::UserRole + 1).toInt();
+
+        QFont font = item->font();
+
+        if(idPlay == idLista){
+            item->setForeground(QBrush(QColor("#6366F1"))); // Color destacado del tema
+            font.setBold(true);
+            item->setFont(font);
+        }
+        else{
+            // Restaurar valores por defecto para el resto de canciones
+            item->setForeground(QBrush(QColor("#E0E0E6")));
+            font.setBold(false);
+            item->setFont(font);
+        }
+    }
+
+    // 5.- Barrra de progreso solo actualiza si no se pulsa
     ui->barraProgreso->setMaximum(estado.duracion);
     ui->barraProgreso->setValue(estado.progreso);
 
-    // Tiempos
+    // 6.- Tiempos
     QString tiempoActual    = QTime(0,0,0).addSecs(estado.progreso).toString("mm:ss");
     QString tiempoTotal     = QTime(0,0,0).addSecs(estado.duracion).toString("mm:ss");
 
     ui->lblTiempo->setText(QString("%1 / %2").arg(tiempoActual).arg(tiempoTotal));
 
-    //barra de volumen
+    // 7.- barra de volumen
     ui->barraVolumen->setValue(estado.volumen);
 }
 
 void MainWindow::on_lstCanciones_itemClicked(QListWidgetItem *item){
     int id = item->data(Qt::UserRole + 1).toInt();
     m_qtMusic->setProximaCancio(id);
+}
+
+void MainWindow::on_lstCanciones_itemDoubleClicked(QListWidgetItem *item){
+    int id = item->data(Qt::UserRole + 1).toInt();
+    m_qtMusic->setNuevaCancion(id);
 }
 
 void MainWindow::on_btnPlay_clicked(){
@@ -98,6 +124,18 @@ void MainWindow::on_btnProximaCancion_clicked(){
         int id =listaItem[0]->data(Qt::UserRole + 1).toInt();
         m_qtMusic->setNuevaCancion(id);
     }
-
 }
+
+
+void MainWindow::on_btnAnterior_clicked(){
+    m_qtMusic->atrasClick();
+}
+
+void MainWindow::on_btnSiguiente_clicked(){
+    m_qtMusic->adelanteClick();
+}
+
+
+
+
 
