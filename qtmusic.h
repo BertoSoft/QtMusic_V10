@@ -38,7 +38,7 @@ public:
         int             volumen             = 50;
         int             progreso            = 0;
         int             duracion            = 0;
-        QList<float>    barrasEqualizador;
+        QList<int>      barrasEqualizador;
     };
 
     // Funcion que usa Ui

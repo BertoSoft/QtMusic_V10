@@ -58,6 +58,13 @@ QLabel {
     font-size: 14px;
     font-weight: bold;
 }
+/* 🌟 AÑADE ESTE BLOQUE NUEVO AQUÍ: */
+#lblTiempo {
+    color: #A855F7;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: &quot;Noto Sans&quot;, &quot;Segoe UI&quot;, sans-serif;
+}
 QProgressBar {
     background-color: #24273A;
     border-radius: 4px;
@@ -139,7 +146,10 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>24</number>
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -155,7 +165,10 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>40</number>
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -171,7 +184,10 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>65</number>
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -187,7 +203,10 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>85</number>
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -203,7 +222,10 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>60</number>
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -219,7 +241,10 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>35</number>
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -235,7 +260,181 @@ QProgressBar::chunk {
             </sizepolicy>
            </property>
            <property name="value">
-            <number>20</number>
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_8">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_9">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_10">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_11">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_12">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_13">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_14">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_15">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="barEcualizador_16">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -247,7 +446,7 @@ QProgressBar::chunk {
       </item>
       <item>
        <widget class="QFrame" name="frame_4">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0">
          <item>
           <widget class="QLabel" name="lblCancionActual">
            <property name="text">
@@ -256,7 +455,7 @@ QProgressBar::chunk {
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="5,1">
+          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="4,1">
            <item>
             <widget class="QSlider" name="barraProgreso">
              <property name="orientation">
@@ -266,6 +465,12 @@ QProgressBar::chunk {
            </item>
            <item>
             <widget class="QLabel" name="lblTiempo">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="minimumSize">
               <size>
                <width>90</width>
@@ -274,7 +479,9 @@ QProgressBar::chunk {
              </property>
              <property name="font">
               <font>
+               <family>Noto Sans</family>
                <pointsize>-1</pointsize>
+               <bold>true</bold>
               </font>
              </property>
              <property name="text">
@@ -288,7 +495,7 @@ QProgressBar::chunk {
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,1,1,1,10,1,5">
            <item>
             <widget class="QPushButton" name="btnAnterior">
              <property name="text">

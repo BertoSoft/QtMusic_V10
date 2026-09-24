@@ -336,12 +336,22 @@ void QtMusic::procesarMuestrasAudio(const QAudioBuffer &buffer){
 
     // Definimos el tamaño del buffer que se analizara
     const size_t TAMANO_FFT = 1024;
+    // 🌟 MEJORA: El avance (Hop Size) es de la mitad del tamaño para lograr un 50% de solapamiento
+    const size_t AVANCE_HOP = 512;
 
     // Esperamos a que tenga por lo menos 1024 datos
     while (m_datosRawMono.size() >= TAMANO_FFT){
 
         // Extraemos exactamente 1024 datos de datosRawMono
         std::vector<float> datosFFT(m_datosRawMono.begin(), m_datosRawMono.begin() + 1024);
+
+
+        // 🌟 MEJORA 1: Aplicamos la función de ventana de Hann antes de la FFT
+        for(size_t i = 0; i < TAMANO_FFT; ++i) {
+            // Multiplicador de la ecuación de Hann
+            float ventanaHann = 0.5f * (1.0f - std::cos(2.0f * M_PI * i / (TAMANO_FFT - 1)));
+            datosFFT[i] *= ventanaHann;
+        }
 
         // =====================================================================
         // ¡LA MAGIA DE FOURIER!
@@ -360,39 +370,78 @@ void QtMusic::procesarMuestrasAudio(const QAudioBuffer &buffer){
         emit estadoActualizado(m_estado);
 
         // sacamos los 1024 datos de m_datosRawMono para seguir acumulando
-        m_datosRawMono.erase(m_datosRawMono.begin(), m_datosRawMono.begin() + 1024);
+        m_datosRawMono.erase(m_datosRawMono.begin(), m_datosRawMono.begin() + AVANCE_HOP);
     }
 }
 
 void QtMusic::datosEqualizadorFromDatosTTF(std::vector<float> espectro){
     m_estado.barrasEqualizador.clear();
 
-    // 512 / 12 = 32
     int numeroBarras = 16;
-    int datosPorBarra = (512 / numeroBarras);
+    int totalBines = 512; // La mitad del tamaño de la FFT (1024 / 2)
 
-    // Recorrremos las barras del equalizador
-    for(int i=0; i<numeroBarras; i++){
-        float sumaValor = 0.0f;
+    // Rangos para mapear a decibelios (calibración visual)
+    const float DB_MIN = -55.0f;
+    const float DB_MAX = 10.0f;
 
-        // Recorremos los datos por barra de equalizador 512 / 16 == 32
-        for(int j=0; j<datosPorBarra;i++){
-            int indice = (i * datosPorBarra) + j;
-            sumaValor += espectro[indice];
+    // Recorremos las 16 barras
+    for (int i = 0; i < numeroBarras; i++) {
+
+        // 🌟 MATEMÁTICAS LOGARÍTMICAS:
+        // Calculamos el bin inicial y final de la FFT de forma exponencial.
+        // Esto hace que las bandas se distribuyan como octavas musicales reales.
+        int binInicio = static_cast<int>(std::pow(totalBines, static_cast<float>(i) / numeroBarras));
+        int binFin    = static_cast<int>(std::pow(totalBines, static_cast<float>(i + 1) / numeroBarras));
+
+        // Filtro de protección para asegurar que al menos lea 1 bin de la FFT
+        if (binFin <= binInicio) {
+            binFin = binInicio + 1;
         }
 
-        float mediaValor = sumaValor / datosPorBarra;
+        // Corrección de límites para no salirnos del vector de la FFT
+        if (binFin > totalBines) binFin = totalBines;
 
-        // 3. Multiplicador visual (Ganancia):
-        // Los datos de la FFT suelen ser decimales muy pequeños.
-        // Multiplicamos para estirar el valor al rango de un QProgressBar (0 a 100)
-        float nivelVisual = mediaValor * 250.0f;
+        float sumaValor = 0.0f;
+        int muestrasContadas = 0;
 
-        // Filtro de seguridad para mantener los límites del porcentaje
-        if (nivelVisual > 100.0f) nivelVisual = 100.0f;
-        if (nivelVisual < 0.0f)   nivelVisual = 0.0f;
+        // Sumamos la energía de los bines que pertenecen a esta barra logarítmica
+        for (int bin = binInicio; bin < binFin; bin++) {
 
-        // 4. Metemos el resultado directamente en el estado de la UI
-        m_estado.barrasEqualizador.append(nivelVisual);
+            sumaValor += espectro[bin];
+            muestrasContadas++;
+        }
+
+        // Si la barra se queda vacía por los filtros de protección, evitamos la división por cero
+        if (muestrasContadas == 0) muestrasContadas = 1;
+
+        float mediaValor = sumaValor / muestrasContadas;
+
+
+        // 🌟 CORRECCIÓN CRÍTICA PARA EL SILENCIO:
+        // Si el valor de energía es menor o igual a cero (o extremadamente insignificante),
+        // guardamos un 0 directo en la barra y pasamos a la siguiente sin aplicar la rampa.
+        if (mediaValor <= 1e-6f) {
+            m_estado.barrasEqualizador.append(0);
+            continue;
+        }
+
+        // 2. Convertimos la amplitud lineal a Decibelios (dB)
+        float db = 20.0f * std::log10(mediaValor);
+
+        // 3. 🌟 NUEVA COMPENSACIÓN DE AGUDOS (RUIDO ROSA):
+        // En la escala logarítmica, la música naturalmente pierde 3 dB de energía por cada octava.
+        // Sumamos +3 dB progresivos por cada barra para que visualmente se mantenga plano y bailable.
+        float factorCorrecionAgudos = (DB_MAX - DB_MIN)/5.0f;
+        db += (i * factorCorrecionAgudos / (numeroBarras / 4.0f));
+
+        // 4. Mapeo lineal de la escala dB al rango INT de 0 a 100
+        float porcentaje = ((db - DB_MIN) / (DB_MAX - DB_MIN)) * 100.0f;
+
+        // 5. Filtro de seguridad obligatorio
+        if (porcentaje > 100.0f) porcentaje = 100.0f;
+        if (porcentaje < 0.0f)   porcentaje = 0.0f;
+
+        // 6. Guardamos directamente como valor entero para la UI
+        m_estado.barrasEqualizador.append(static_cast<int>(porcentaje));
     }
 }

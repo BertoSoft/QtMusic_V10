@@ -85,10 +85,21 @@ void MainWindow::dibujaUi(const QtMusic::EstadoUi &estado){
     // 7.- barra de volumen
     ui->barraVolumen->setValue(estado.volumen);
 
-    // 8.- Barras equalizador
-    //ui->barEcualizador_1->setValue(estado.barrasEqualizador[1]);
+    // 8.- Barras equalizador (Simplificado con bucle dinámico)
+    if (estado.barrasEqualizador.count() >= 16) {
+        for (int i = 0; i < 16; i++) {
+            // Construimos el nombre exacto de la barra utilizando %1 y .arg()
+            QString nombreBarra = QString("barEcualizador_%1").arg(i + 1);
 
+            // Buscamos el objeto QProgressBar dinámicamente en la UI
+            QProgressBar *bar = this->findChild<QProgressBar*>(nombreBarra);
 
+            // Si el objeto existe, le asignamos su valor correspondiente
+            if (bar) {
+                bar->setValue(estado.barrasEqualizador[i]);
+            }
+        }
+    }
 }
 
 void MainWindow::on_lstCanciones_itemClicked(QListWidgetItem *item){
