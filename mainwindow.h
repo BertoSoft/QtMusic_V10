@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
+#include <QProgressBar>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -51,6 +52,10 @@ private:
     // Funciones privadas
     void initUi();
     void initConnect();
+    void initEqualizador();
+
+    // Almacena dinámicamente los punteros a las 32 barras de la interfaz
+    std::vector<QProgressBar*> m_barrasUi;
 
 
     // Variable que guarda el puntero a QtMusic

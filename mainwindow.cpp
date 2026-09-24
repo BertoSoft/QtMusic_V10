@@ -22,6 +22,7 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::initUi(){
+    initEqualizador();
     initConnect();
     m_qtMusic->initQtMusic();
 }
@@ -30,6 +31,30 @@ void MainWindow::initConnect(){
 
     connect(m_qtMusic, &QtMusic::estadoActualizado, this, &MainWindow::dibujaUi);
 
+}
+
+void MainWindow::initEqualizador(){
+    const int numeroBarras = 32;
+    m_barrasUi.reserve(numeroBarras);
+
+    for (int i = 0; i < numeroBarras; ++i) {
+        // 1. Instanciamos una nueva barra de progreso
+        QProgressBar *bar = new QProgressBar(this);
+
+        // 2. Replicamos las propiedades exactas que tenías en el XML
+        bar->setOrientation(Qt::Vertical);
+        bar->setTextVisible(false);
+        bar->setValue(0);
+
+        // Política de tamaño para que se autoajusten elásticamente al ancho de la pantalla
+        bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+        // 3. Lo añadimos al layout de la interfaz
+        ui->horizontalLayout_3->addWidget(bar);
+
+        // 4. Guardamos la referencia en nuestro vector privado
+        m_barrasUi.push_back(bar);
+    }
 }
 
 void MainWindow::dibujaUi(const QtMusic::EstadoUi &estado){
@@ -86,19 +111,10 @@ void MainWindow::dibujaUi(const QtMusic::EstadoUi &estado){
     ui->barraVolumen->setValue(estado.volumen);
 
     // 8.- Barras equalizador (Simplificado con bucle dinámico)
-    if (estado.barrasEqualizador.count() >= 16) {
-        for (int i = 0; i < 16; i++) {
-            // Construimos el nombre exacto de la barra utilizando %1 y .arg()
-            QString nombreBarra = QString("barEcualizador_%1").arg(i + 1);
-
-            // Buscamos el objeto QProgressBar dinámicamente en la UI
-            QProgressBar *bar = this->findChild<QProgressBar*>(nombreBarra);
-
-            // Si el objeto existe, le asignamos su valor correspondiente
-            if (bar) {
-                bar->setValue(estado.barrasEqualizador[i]);
-            }
-        }
+    // Actualización dinámica de las 32 barras
+    size_t limite = std::min(m_barrasUi.size(), static_cast<size_t>(estado.barrasEqualizador.size()));
+    for (size_t i = 0; i < limite; ++i) {
+        m_barrasUi[i]->setValue(estado.barrasEqualizador[i]);
     }
 }
 

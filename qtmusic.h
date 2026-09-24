@@ -67,6 +67,9 @@ private:
     QAudioBufferOutput  *m_bufferSalida     = nullptr;
     std::vector<float>   m_datosRawMono;
 
+    // Guarda el estado del frame anterior adaptándose dinámicamente al número de barras
+    std::vector<float> m_barrasMemoria;
+
     // La variable real que mantien el estado en memoria
     EstadoUi m_estado;
 
@@ -75,6 +78,7 @@ private:
     Cancion getCancionFromId(int id);
     void    procesarMuestrasAudio(const QAudioBuffer &buffer);
     void    datosEqualizadorFromDatosTTF(std::vector<float> espectro);
+    void    setSuavizadoEqualizador();
 
 };
 
